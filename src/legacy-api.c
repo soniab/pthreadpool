@@ -60,6 +60,21 @@ void pthreadpool_compute_2d_tiled(
 		range_i, range_j, tile_i, tile_j, 0 /* flags */);
 }
 
+void pthreadpool_compute_2d_tiled_intertile(
+        pthreadpool_t threadpool,
+        pthreadpool_function_2d_tiled_t function,
+        void* argument,
+        size_t range_i,
+        size_t range_j,
+        size_t tile_i,
+        size_t tile_j, size_t tiles)
+{
+pthreadpool_parallelize_2d_tile_2d_intertile(threadpool,
+                (pthreadpool_task_2d_tile_2d_t1) function, argument,
+                range_i, range_j, tile_i, tile_j, tiles,0 /* flags */);
+}
+
+
 struct compute_3d_tiled_context {
 	pthreadpool_function_3d_tiled_t function;
 	void* argument;

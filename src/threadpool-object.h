@@ -128,6 +128,34 @@ struct pthreadpool_2d_tile_1d_params {
 	struct fxdiv_divisor_size_t tile_range_j;
 };
 
+
+/* added by sonia */
+ 
+struct pthreadpool_2d_tile_2d_params_intertile {
+	/**
+	 * Copy of the range_i argument passed to the pthreadpool_parallelize_2d_tile_2d function.
+	 */
+	size_t range_i;
+	/**
+	 * Copy of the tile_i argument passed to the pthreadpool_parallelize_2d_tile_2d function.
+	 */
+	size_t tile_i;
+	/**
+	 * Copy of the range_j argument passed to the pthreadpool_parallelize_2d_tile_2d function.
+	 */
+	size_t range_j;
+	/**
+	 * Copy of the tile_j argument passed to the pthreadpool_parallelize_2d_tile_2d function.
+	 */
+	size_t tile_j;
+	/**
+	 * FXdiv divisor for the divide_round_up(range_j, tile_j) value.
+	 */
+	struct fxdiv_divisor_size_t tile_range_j;
+};
+ 
+/* end  */
+
 struct pthreadpool_2d_tile_2d_params {
 	/**
 	 * Copy of the range_i argument passed to the pthreadpool_parallelize_2d_tile_2d function.

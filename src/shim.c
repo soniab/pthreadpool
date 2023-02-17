@@ -113,6 +113,26 @@ void pthreadpool_parallelize_2d_tile_2d(
 	}
 }
 
+
+//added by sonia - start
+void pthreadpool_parallelize_2d_tile_2d_intertile(
+        pthreadpool_t threadpool,
+        pthreadpool_task_2d_tile_2d_t1 task,
+        void* argument,
+        size_t range_i,
+        size_t range_j,
+        size_t tile_i,
+        size_t tile_j,size_t tiles,
+        uint32_t flags)
+{
+	for (size_t i = 0; i < range_i; i += tile_i) {
+                for (size_t j = 0; j < range_j; j += tile_j) {
+                        task(argument, i, j, min(range_i - i, tile_i), min(range_j - j, tile_j));
+                }
+        }
+}
+//added by sonia - end
+
 void pthreadpool_parallelize_2d_tile_2d_with_uarch(
 	pthreadpool_t threadpool,
 	pthreadpool_task_2d_tile_2d_with_id_t task,

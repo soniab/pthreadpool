@@ -11,6 +11,7 @@ typedef void (*pthreadpool_task_1d_tile_1d_t)(void*, size_t, size_t);
 typedef void (*pthreadpool_task_2d_t)(void*, size_t, size_t);
 typedef void (*pthreadpool_task_2d_tile_1d_t)(void*, size_t, size_t, size_t);
 typedef void (*pthreadpool_task_2d_tile_2d_t)(void*, size_t, size_t, size_t, size_t);
+typedef void (*pthreadpool_task_2d_tile_2d_t1)(void*, size_t, size_t, size_t, size_t);
 typedef void (*pthreadpool_task_3d_t)(void*, size_t, size_t, size_t);
 typedef void (*pthreadpool_task_3d_tile_1d_t)(void*, size_t, size_t, size_t, size_t);
 typedef void (*pthreadpool_task_3d_tile_2d_t)(void*, size_t, size_t, size_t, size_t, size_t);
@@ -306,6 +307,24 @@ void pthreadpool_parallelize_2d_tile_2d(
 	size_t tile_i,
 	size_t tile_j,
 	uint32_t flags);
+
+
+
+/*
+ * added by sonia
+ * for intertile communication among ahannels
+ */
+void pthreadpool_parallelize_2d_tile_2d_intertile(
+        pthreadpool_t threadpool,
+        pthreadpool_task_2d_tile_2d_t1 task,
+        void* argument,
+        size_t range_i,
+        size_t range_j,
+        size_t tile_i,
+        size_t tile_j,size_t tiles,
+        uint32_t flags);
+
+
 
 /**
  * Process items on a 2D grid with the specified maximum tile size along each
@@ -1127,6 +1146,16 @@ void pthreadpool_compute_2d_tiled(
 	size_t range_j,
 	size_t tile_i,
 	size_t tile_j) PTHREADPOOL_DEPRECATED;
+
+void pthreadpool_compute_2d_tiled_intertile(
+        pthreadpool_t threadpool,
+        pthreadpool_function_2d_tiled_t function,
+        void* argument,
+        size_t range_i,
+        size_t range_j,
+        size_t tile_i,
+        size_t tile_j, size_t tiles) PTHREADPOOL_DEPRECATED;
+
 
 void pthreadpool_compute_3d_tiled(
 	pthreadpool_t threadpool,

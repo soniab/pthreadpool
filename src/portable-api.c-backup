@@ -4,7 +4,7 @@
 #include <stdint.h>
 #include <stdlib.h>
 #include <string.h>
-#include<arm_sve.h>
+
 #if PTHREADPOOL_USE_CPUINFO
 	#include <cpuinfo.h>
 #endif
@@ -1502,36 +1502,24 @@ void pthreadpool_parallelize_2d_tile_2d_intertile(
         size_t range_i,
         size_t range_j,
         size_t tile_i,
-        size_t tile_j,size_t tiles,
+        size_t tile_j,
         uint32_t flags)
-{     
-
-	//printf("range_i = %d, range j = %d\n", range_i, range_j); 
+{      
         size_t threads_count;
-	int interchannels =tiles;//16 ;  // for 1024-bit
-	//printf("%d %d\n ", range_i, range_j);
+
 	//added by sonia- starting with sequential
-	if((range_i >= 4) && (range_j>=4))
+	if(range_i >= 4)
 	{
-		//printf("I am going in correct logic with range_i in intertile= %d\n", range_i);
-		if(tile_i==1)
-		{
-			tile_i =interchannels;
-		}
-		else if(tile_j == 1)
-		{
-			tile_j=interchannels;
-		}
+		printf("I am going in correct logic with range_i in intertile= %d\n", range_i);
 		/* No thread pool used: execute task sequentially on the calling thread */
                 struct fpu_state saved_fpu_state = { 0 };
                 if (flags & PTHREADPOOL_FLAG_DISABLE_DENORMALS) {
                         saved_fpu_state = get_fpu_state();
                         disable_fpu_denormals();
                 }
-                for (size_t i = 0; i < range_i; i += tile_i) {  // need to load 8x8 tiles from 4 channels at a time 
+                for (size_t i = 0; i < range_i; i += 4) {  // need to load 8x8 tiles from 4 channels at a time 
                         for (size_t j = 0; j < range_j; j += tile_j) {
-          //              printf(" tile i = %d tile j = %d, min(range_i - i, tile_i) = %d min(range_j - j, tile_j) = %d\n", tile_i, tile_j, min(range_i - i, tile_i),  min(range_j - j, tile_j));      
-			  task(argument, i, j, min(range_i - i, tile_i), min(range_j - j, tile_j));
+                                task(argument, i, j, min(range_i - i, 4), min(range_j - j, tile_j));
                         }
                 }
                 if (flags & PTHREADPOOL_FLAG_DISABLE_DENORMALS) {
@@ -1540,7 +1528,7 @@ void pthreadpool_parallelize_2d_tile_2d_intertile(
 
 	}  // added by sonia - end 
         else if (threadpool == NULL || (threads_count = threadpool->threads_count.value) <= 1 || (range_i <= tile_i && range_j <= tile_j)) {
-		//printf("I am going in correct else if logic with range_i = %d", range_i);
+		printf("I am going in correct else if logic with range_i = %d", range_i);
                 /* No thread pool used: execute task sequentially on the calling thread */
                 struct fpu_state saved_fpu_state = { 0 };
                 if (flags & PTHREADPOOL_FLAG_DISABLE_DENORMALS) {
@@ -1556,7 +1544,7 @@ void pthreadpool_parallelize_2d_tile_2d_intertile(
                         set_fpu_state(saved_fpu_state);
                 }
         } else {
-	//	printf("I am going in correct else  logic with range_i = %d", range_i);
+		printf("I am going in correct else  logic with range_i = %d", range_i);
                 const size_t tile_range_i = divide_round_up(range_i, tile_i);
                 const size_t tile_range_j = divide_round_up(range_j, tile_j);
                 const size_t tile_range = tile_range_i * tile_range_j;
